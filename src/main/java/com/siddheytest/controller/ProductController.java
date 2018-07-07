@@ -64,5 +64,17 @@ public class ProductController {
 	public Product findById(@PathVariable Long id) {
 		return productService.findById(id);
 	}
+	
+	
+	/*
+	 * 
+	 * 
+	 * @RequestMapping(value = "/find/{id}", method = RequestMethod.GET)
+	public Product findById(@PathVariable Long id) {
+		return productService.findById(id);
+	}
+	 * 
+	 * 
+	 */
 
 }
