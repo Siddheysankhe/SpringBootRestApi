@@ -1,0 +1,67 @@
+ElectronicProduct mobile = new ElectronicProduct("Mobile");
+
+entityManager.persist(mobile);
+
+mobileId = mobile.getId();
+
+Product product = entityManager.getReference(Product.class, mobileId);
+
+//This will return a hibernate proxy which is not initialized and will be instance of Product and Not Electronic Product
+
+//if we call following method
+
+logger.info(product.getDetails());
+
+//this will initialize the proxy hence proxy will be initialized with data from Database but still will be instance of Product
+//but now hibernate knows our product is mobile but proxy will continue to be product proxy
+
+Product product2 = entityManager.getReference(Product.class,mobileId);
+
+//Now if we think that we try to load product again since the proxy is initialized hibernate will return the instance of
+//electronic product but that's not true as hibernate prefers returning entity from first level cache rather than loading
+//it again from db
+
+//if we try to load ElectronicProduct entity explicitly by running below code
+//This will be unproxied ElectronicProduct Instance
+
+Product product3 = entityManager.getReference(ElectronicProduct.class, mobileId);
+
+//this will generate following warning 
+
+//HHH000179: Narrowing proxy to class Cat - this operation breaks ==
+
+//because right now we have two different objects i.e. proxy and actual entity referring to the same row of db
+
+//if we change the value of actual entity it will also change the value of proxied entity
+
+//now if we do this 
+
+Comapny samsung = entityManager.find(Company.class,samsungId);
+
+//find directly returns entity object unlike getReference
+
+if(samsung.getProducts().conatins(product)) this will return false 
+
+if(samsung.getProducts().conatins(product3)) this will return true
+
+this will happen if we rely on default equals() and hashCode() implementation
+
+The 1st statement will return false because the contains method uses equals for the object which by default 
+public boolean equals(Object obj) {
+        return (this == obj);
+    }
+    
+    
+ This can be easily avoided if we change the equals method of the Base Entity,
+ @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || !(o instanceof BaseEntity)) return false;
+
+        BaseEntity that = (BaseEntity) o;
+
+        // remember to use *getters*
+        return getId().equals(that.getId());
+    }
+
+ 
