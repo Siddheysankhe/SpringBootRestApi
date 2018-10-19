@@ -28,7 +28,7 @@ Product product3 = entityManager.getReference(ElectronicProduct.class, mobileId)
 
 //this will generate following warning 
 
-//HHH000179: Narrowing proxy to class Cat - this operation breaks ==
+//HHH000179: Narrowing proxy to class ElectronicProduct - this operation breaks ==
 
 //because right now we have two different objects i.e. proxy and actual entity referring to the same row of db
 
